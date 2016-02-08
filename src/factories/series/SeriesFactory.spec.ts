@@ -1,13 +1,13 @@
 /// <reference path='../../test.spec.ts' />
 
 describe('n3Charts.Factory.Series.SeriesFactory', () => {
-  var domElement: JQuery = angular.element(document.body).append('<div></div>');
+  var elem: D3.Selection = d3.select(document.body).append('div');
   var seriesFactory: n3Charts.Factory.Series.SeriesFactory = undefined;
 
   beforeEach(() => {
-    // Truncate the domElement
-    domElement.children().remove();
-    d3.select(domElement[0]).append('svg');
+    // Truncate the elem
+    elem.selectAll('*').remove();
+    elem.append('svg');
 
     seriesFactory = new n3Charts.Factory.Series.SeriesFactory();
   });
@@ -16,26 +16,26 @@ describe('n3Charts.Factory.Series.SeriesFactory', () => {
 
     it('should create a svg container', () => {
 
-      var dataContainer: SVGElement = undefined;
-      var parentContainer = <SVGElement> domElement[0].getElementsByTagName('svg')[0];
+      var dataContainer: D3.Selection;
+      var parentContainer = elem.select('svg');
 
-      seriesFactory.createContainer(d3.select(parentContainer));
-      dataContainer = <SVGElement> domElement[0].getElementsByTagName('g')[0];
+      seriesFactory.createContainer(parentContainer);
+      dataContainer = elem.select('g');
 
       expect(dataContainer).not.to.equal(undefined);
-      expect(dataContainer.tagName).to.equal('g');
+      expect(dataContainer[0][0].tagName).to.equal('g');
     });
 
     it('should provide a svg property', () => {
 
-      var parentContainer = <SVGElement> domElement[0].getElementsByTagName('svg')[0];
+      var parentContainer = elem.select('svg');
       var svgProp: SVGElement = undefined;
 
       expect(seriesFactory.svg).to.equal(undefined);
 
-      seriesFactory.createContainer(d3.select(parentContainer));
+      seriesFactory.createContainer(parentContainer);
 
-      expect(seriesFactory.svg).to.not.equal(undefined);
+      expect(seriesFactory.svg[0][0]).to.not.equal(undefined);
       expect(seriesFactory.svg[0][0].tagName).to.equal('g');
     });
   });

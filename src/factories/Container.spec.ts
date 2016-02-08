@@ -1,40 +1,40 @@
 /// <reference path='../test.spec.ts' />
 
 describe('n3Charts.Factory.Container', () => {
-  var domElement: JQuery = angular.element(document.body).append('<div></div>');
+  var elem: D3.Selection = d3.select(document.body).append('div');
   var container: n3Charts.Factory.Container = undefined;
 
   beforeEach(() => {
-    // Truncate the domElement
-    domElement.children().remove();
+    // Truncate the elem
+    elem.selectAll('*').remove();
 
-    container = new n3Charts.Factory.Container(domElement[0]);
+    container = new n3Charts.Factory.Container(elem[0][0]);
   });
 
   describe('createRoot()', () => {
 
     it('should create a svg root node', () => {
 
-      var rootNode: SVGElement = undefined;
+      var rootNode: D3.Selection;
 
       container.createRoot();
 
-      rootNode = <SVGElement> domElement[0].getElementsByTagName('svg')[0];
+      rootNode = elem.select('svg');
 
-      expect(rootNode.getAttribute('class')).to.equal('chart');
+      expect(rootNode.attr('class')).to.equal('chart');
     });
 
     it('should provide a svg property', () => {
 
-      var svgProp: SVGElement = undefined;
+      var svgProp: D3.Selection;
 
       expect(container.svg).to.equal(undefined);
 
       container.createRoot();
 
-      svgProp = container.svg[0][0];
+      svgProp = container.svg;
 
-      expect(svgProp.getAttribute('class')).to.equal('chart');
+      expect(svgProp.attr('class')).to.equal('chart');
     });
 
   });
@@ -43,66 +43,66 @@ describe('n3Charts.Factory.Container', () => {
 
     it('should create a vis container', () => {
 
-      var visContainer: SVGElement = undefined;
+      var visContainer: D3.Selection;
 
       container.createRoot();
       container.createContainer();
 
-      visContainer = <SVGElement> domElement[0].getElementsByTagName('g')[0];
+      visContainer = elem.select('g');
 
-      expect(visContainer.getAttribute('class')).to.equal('container');
+      expect(visContainer.attr('class')).to.equal('container');
     });
 
     it('should provide a vis property', () => {
 
-      var visProp: SVGElement = undefined;
+      var visProp: D3.Selection;
 
       expect(container.vis).to.equal(undefined);
 
       container.createRoot();
       container.createContainer();
 
-      visProp = container.vis[0][0];
+      visProp = container.vis;
 
-      expect(visProp.getAttribute('class')).to.equal('container');
+      expect(visProp.attr('class')).to.equal('container');
     });
 
     it('should create an axes container', () => {
 
-      var dataContainer: SVGElement = undefined;
+      var dataContainer: D3.Selection;
 
       container.createRoot();
       container.createContainer();
 
-      dataContainer = <SVGElement> domElement[0].getElementsByTagName('g')[1];
+      dataContainer = elem.select('.container > g:nth-of-type(1)');
 
-      expect(dataContainer.getAttribute('class')).to.equal('axes');
+      expect(dataContainer.attr('class')).to.equal('axes');
     });
 
     it('should create a data container', () => {
 
-      var dataContainer: SVGElement = undefined;
+      var dataContainer: D3.Selection;
 
       container.createRoot();
       container.createContainer();
 
-      dataContainer = <SVGElement> domElement[0].getElementsByTagName('g')[2];
+      dataContainer = elem.select('.container > g:nth-of-type(2)');
 
-      expect(dataContainer.getAttribute('class')).to.equal('data');
+      expect(dataContainer.attr('class')).to.equal('data');
     });
 
     it('should provide a data property', () => {
 
-      var dataProp: SVGElement = undefined;
+      var dataProp: D3.Selection;
 
       expect(container.data).to.equal(undefined);
 
       container.createRoot();
       container.createContainer();
 
-      dataProp = container.data[0][0];
+      dataProp = container.data;
 
-      expect(dataProp.getAttribute('class')).to.equal('data');
+      expect(dataProp.attr('class')).to.equal('data');
     });
 
   });

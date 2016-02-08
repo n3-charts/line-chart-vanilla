@@ -1,5 +1,3 @@
-/// <reference path='BaseFactory.ts' />
-
 module n3Charts.Factory {
   'use strict';
 

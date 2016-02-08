@@ -1,23 +1,23 @@
 /// <reference path='../../test.spec.ts' />
 
 describe('n3Charts.Factory.Series.Column', () => {
-  var domElement: JQuery = angular.element(document.body).append('<div></div>');
+  var elem: D3.Selection = d3.select(document.body).append('div');
   var columnSeries: n3Charts.Factory.Series.Column = undefined;
 
   beforeEach(() => {
-    // Truncate the domElement
-    domElement.children().remove();
-    d3.select(domElement[0]).append('svg');
+    // Truncate the elem
+    elem.selectAll('*').remove();
+    elem.append('svg');
 
     columnSeries = new n3Charts.Factory.Series.Column();
   });
 
   describe('createSeriesContainer', () => {
-    var container: SVGElement;
+    var container: D3.Selection;
 
     beforeEach(() => {
-        container = <SVGElement>domElement[0].getElementsByTagName('svg')[0];
-        columnSeries.createContainer(d3.select(container));
+        container = elem.select('svg');
+        columnSeries.createContainer(container);
     });
 
     it('should create a <g> container', () => {

@@ -1,12 +1,12 @@
 /// <reference path='../test.spec.ts' />
 
 describe('n3Charts.Factory.Axis', () => {
-  var domElement: JQuery = angular.element(document.body).append('<div></div>');
+  var elem: D3.Selection = d3.select(document.body).append('div');
   var axis: n3Charts.Factory.Axis = undefined;
 
   beforeEach(() => {
-    // Truncate the domElement
-    domElement.children().remove();
+    // Truncate the elem
+    elem.selectAll('*').remove();
 
     axis = new n3Charts.Factory.Axis('y');
   });
