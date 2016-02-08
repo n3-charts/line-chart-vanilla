@@ -70,7 +70,7 @@ module n3Charts.Options {
       var options = <IOptions>{};
 
       // Extend the default options
-      angular.extend(options, this, js);
+      Utils.extend(options, this, js);
 
       options.margin = this.sanitizeMargin(Options.getObject(options.margin, this.margin));
       options.series = this.sanitizeSeries(Options.getArray(options.series));
@@ -216,14 +216,14 @@ module n3Charts.Options {
 
     static getObject(value: any, defaultValue: any = {}) {
       // Type check because *val* is of type any
-      if (!angular.isObject(value)) {
+      if (!Utils.isObject(value)) {
         throw TypeError(value + ' option must be an object.');
       }
 
       var obj = {};
 
       // Extend by default parameter
-      angular.extend(obj, defaultValue, value);
+      Utils.extend(obj, defaultValue, value);
 
       return obj;
     }

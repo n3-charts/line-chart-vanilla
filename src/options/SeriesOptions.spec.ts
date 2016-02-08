@@ -2,7 +2,8 @@
 
 describe('n3Charts.Options.SeriesOptions', () => {
   // Type Shortcut
-  var SeriesOptions = n3Charts.Options.SeriesOptions;
+    var Utils = n3Charts.Utils;
+    var SeriesOptions = n3Charts.Options.SeriesOptions;
   // Placeholder for module instance
   var seriesOptions: n3Charts.Options.SeriesOptions;
 
@@ -32,7 +33,7 @@ describe('n3Charts.Options.SeriesOptions', () => {
     });
 
     it('should create an axis property with the type string', () => {
-      var testing = angular.isString(seriesOptions.axis);
+      var testing = Utils.isString(seriesOptions.axis);
       var expected = true;
 
       expect(testing).to.equal(expected);
@@ -46,7 +47,7 @@ describe('n3Charts.Options.SeriesOptions', () => {
     });
 
     it('should create a dataset property with the type string', () => {
-      var testing = angular.isString(seriesOptions.dataset);
+      var testing = Utils.isString(seriesOptions.dataset);
       var expected = true;
 
       expect(testing).to.equal(expected);
@@ -60,7 +61,7 @@ describe('n3Charts.Options.SeriesOptions', () => {
     });
 
     it('should create a key property with the proper type', () => {
-      var testing = angular.isObject(seriesOptions.key);
+      var testing = Utils.isObject(seriesOptions.key);
       var expected = true;
 
       expect(testing).to.equal(expected);
@@ -74,7 +75,7 @@ describe('n3Charts.Options.SeriesOptions', () => {
     });
 
     it('should create a color property with the type string', () => {
-      var testing = angular.isString(seriesOptions.color);
+      var testing = Utils.isString(seriesOptions.color);
       var expected = true;
 
       expect(testing).to.equal(expected);
@@ -88,7 +89,7 @@ describe('n3Charts.Options.SeriesOptions', () => {
     });
 
     it('should create an id property with the type string', () => {
-      var testing = angular.isString(seriesOptions.id);
+      var testing = Utils.isString(seriesOptions.id);
       var expected = true;
 
       expect(testing).to.equal(expected);
@@ -102,7 +103,7 @@ describe('n3Charts.Options.SeriesOptions', () => {
     });
 
     it('should create a label property with the type string', () => {
-      var testing = angular.isString(seriesOptions.label);
+      var testing = Utils.isString(seriesOptions.label);
       var expected = true;
 
       expect(testing).to.equal(expected);
@@ -116,7 +117,7 @@ describe('n3Charts.Options.SeriesOptions', () => {
     });
 
     it('should create a type property with the type array', () => {
-      var testing = angular.isArray(seriesOptions.type);
+      var testing = Utils.isArray(seriesOptions.type);
       var expected = true;
 
       expect(testing).to.equal(expected);

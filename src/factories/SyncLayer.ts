@@ -79,7 +79,7 @@ module n3Charts.Factory {
             }
 
             if (!domains.x || !domains.y) {
-              domains = angular.copy(domains);
+              domains = Utils.copy(domains);
             }
 
             if (!domains.x) {

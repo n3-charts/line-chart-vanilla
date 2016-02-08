@@ -2,6 +2,7 @@
 
 describe('n3Charts.Options.Options', () => {
   // Type Shortcut
+  var Utils = n3Charts.Utils;
   var Options = n3Charts.Options.Options;
   var SeriesOptions = n3Charts.Options.SeriesOptions;
   var AxisOptions = n3Charts.Options.AxisOptions;
@@ -22,7 +23,7 @@ describe('n3Charts.Options.Options', () => {
     it('should create a series property with the type array', () => {
       options = new Options();
 
-      var testing = angular.isArray(options.series);
+      var testing = Utils.isArray(options.series);
       var expected = true;
 
       expect(testing).to.equal(expected);
@@ -31,7 +32,7 @@ describe('n3Charts.Options.Options', () => {
     it('should create a margin property with the type object', () => {
       options = new Options();
 
-      var testing = angular.isObject(options.margin);
+      var testing = Utils.isObject(options.margin);
       var expected = true;
 
       expect(testing).to.equal(expected);
@@ -40,7 +41,7 @@ describe('n3Charts.Options.Options', () => {
     it('should create an axes property with the type object', () => {
       options = new Options();
 
-      var testing = angular.isObject(options.axes);
+      var testing = Utils.isObject(options.axes);
       var expected = true;
 
       expect(testing).to.equal(expected);
@@ -55,7 +56,7 @@ describe('n3Charts.Options.Options', () => {
     it('should create an array as series property', () => {
       var opt = options.sanitizeOptions();
 
-      var testing = angular.isArray(opt.series);
+      var testing = Utils.isArray(opt.series);
       var expected = true;
 
       expect(testing).to.equal(expected);
@@ -64,7 +65,7 @@ describe('n3Charts.Options.Options', () => {
     it('should create an object as margin property', () => {
       var opt = options.sanitizeOptions();
 
-      var testing = angular.isObject(opt.margin);
+      var testing = Utils.isObject(opt.margin);
       var expected = true;
 
       expect(testing).to.equal(expected);
@@ -81,7 +82,7 @@ describe('n3Charts.Options.Options', () => {
     it('should create an object as axes property', () => {
       var opt = options.sanitizeOptions();
 
-      var testing = angular.isObject(opt.axes);
+      var testing = Utils.isObject(opt.axes);
       var expected = true;
 
       expect(testing).to.equal(expected);
