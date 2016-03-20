@@ -19,47 +19,45 @@ js: '''
     };
 
     $scope.options = {
-      margin: {
-        left: 100,
-        top: 10,
-        bottom: 30,
-        right: 100
-      },
+      pan: {x: true, y: true},
+      zoom: {x: true, y: true},
       series: [
         {
           axis: "y",
           dataset: "dataset0",
           key: "val_0",
           label: "A first series",
-          color: "#1f77b4",
+          color: "hsla(31, 100%, 48%, 1)",
           type: ["dot", "line"],
           id: 'mySeries0'
         },
         {
-          axis: "y",
+          axis: "y2",
           dataset: "dataset0",
           key: "val_1",
           label: "Another series",
-          color: "grey",
+          color: "hsla(99, 78%, 35%, 1)",
           thickness: "1px",
-          type: "dot",
+          type: ["dot", "line"],
           id: 'mySeries1'
+        },
+        {
+          axis: "y",
+          dataset: "dataset0",
+          key: "val_2",
+          label: "Another series",
+          color: "hsla(3, 72%, 47%, 1)",
+          thickness: "1px",
+          type: ["dot", "line"],
+          id: 'mySeries2'
         }
       ],
       axes: {
-        x: {key: "x", tickFormat: function(value, index) {
-          return "Pouet : " + value + " " + index;
-        }},
-        y: {
-          tickFormat: function(value, index) {
-            return "Tut : " + value + " " + index;
-          },
-          min: 0,
-          max: 1000
-        }
+        x: {key: "x"},
+        y: {},
+        y2: {min: -10, max: 100}
       }
     };
   }
 '''
 }
-

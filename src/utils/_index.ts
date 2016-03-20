@@ -3,3 +3,4 @@
 /// <reference path='Dataset.ts' />
 /// <reference path='Data.ts' />
 /// <reference path='Compatibility.ts' />
+/// <reference path='FunctionUtils.ts' />

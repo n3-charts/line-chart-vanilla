@@ -12,6 +12,8 @@ module n3Charts.Factory {
     private line:D3.Selection;
     private dots:D3.Selection;
 
+    private options: Options.Options;
+
     constructor(private element: HTMLElement) {
       super();
     }
@@ -21,13 +23,19 @@ module n3Charts.Factory {
       this.hide();
     }
 
-    create() {
+    create(options: Options.Options) {
+      this.options = options;
+
       this.createTooltip();
       this.eventMgr.on('container-move.tooltip', this.show.bind(this));
       this.eventMgr.on('container-out.tooltip', this.hide.bind(this));
       this.eventMgr.on('outer-world-hover.tooltip', this.showFromCoordinates.bind(this));
 
       this.hide();
+    }
+
+    update(data: Utils.Data, options: Options.Options) {
+      this.options = options;
     }
 
     createTooltip() {
@@ -58,6 +66,7 @@ module n3Charts.Factory {
       var closestRows = [];
       var closestIndex = -1;
       var minDistance = Number.POSITIVE_INFINITY;
+      var foundSeries: Options.ISeriesOptions[] = [];
 
       for (var i = 0; i < datasets.length; i++) {
         for (var j = 0; j < datasets[i].length; j++) {
@@ -69,11 +78,14 @@ module n3Charts.Factory {
             var distance = Math.abs(datasets[i][j].x - x);
           }
 
-          if (distance === minDistance) {
-            closestRows.push({series: visibleSeries[i], row: datasets[i][j]});
+          let series = visibleSeries[i];
+          if (distance === minDistance && foundSeries.indexOf(series) === -1) {
+            closestRows.push({series, row: datasets[i][j]});
+            foundSeries.push(series);
           } else if (distance < minDistance) {
             minDistance = distance;
             closestRows = [{series: visibleSeries[i], row: datasets[i][j]}];
+            foundSeries = [series];
             closestIndex = j;
           }
         }
@@ -90,7 +102,7 @@ module n3Charts.Factory {
       var {x, y} = coordinates;
 
       if (x === undefined || y === undefined) {
-        this.hide();
+        this.hide(undefined, data, options);
         return;
       }
 
@@ -102,7 +114,7 @@ module n3Charts.Factory {
 
       var {rows, index} = this.getClosestRows(<number>x , data, options);
       if (rows.length === 0) {
-        this.hide();
+        this.hide(undefined, data, options);
         return;
       }
 
@@ -139,12 +151,29 @@ module n3Charts.Factory {
       this.showFromCoordinates(coordinates, data, options);
     }
 
+    hide(event?: any, data?: Utils.Data, options?: Options.Options) {
+      this.svg
+        .style('display', 'none');
+
+      this.line
+        .style('opacity', '0');
+
+      this.dots
+        .style('opacity', '0');
+
+      if (options && options.tooltipHook) {
+        options.tooltipHook(undefined);
+      }
+    }
+
     // This is the part the user can override.
     getTooltipContent(rows: INeighbour[], closestIndex: number, options: Options.Options) {
       var xTickFormat = options.getByAxisSide(Options.AxisOptions.SIDE.X).tickFormat;
-      var yTickFormat = options.getByAxisSide(Options.AxisOptions.SIDE.Y).tickFormat;
+      var getYTickFormat = (side: string) => options.getByAxisSide(side).tickFormat;
 
       var getRowValue = (d: INeighbour) => {
+        var yTickFormat = getYTickFormat(d.series.axis);
+
         var fn = yTickFormat ? (y1) => yTickFormat(y1, closestIndex) : (y1) => y1;
         var y1Label = fn(d.row.y1);
 
@@ -214,14 +243,10 @@ module n3Charts.Factory {
 
     updateTooltipDots(rows: INeighbour[]) {
       var xScale = this.factoryMgr.get('x-axis').scale;
-      var yScale = this.factoryMgr.get('y-axis').scale;
+      var yScale = (side) => this.factoryMgr.get(side + '-axis').scale;
 
       var radius = 3;
       var circlePath = (r, cx, cy) => {
-        return `M ${cx} ${cy} m -${r}, 0 a ${r},${r} 0 1,0 ${r * 2},0 a ${r},${r} 0 1,0 -${r * 2},0 `;
-      };
-
-      var trianglePath = (r, cx, cy) => {
         return `M ${cx} ${cy} m -${r}, 0 a ${r},${r} 0 1,0 ${r * 2},0 a ${r},${r} 0 1,0 -${r * 2},0 `;
       };
 
@@ -230,25 +255,29 @@ module n3Charts.Factory {
 
         s.append('path').attr({
           'class': 'tooltip-dot y1'
+        }).on('click', (d:INeighbour, i) => {
+           this.eventMgr.trigger('click', d.row, i, d.series, this.options);
         });
 
         s.append('path').attr({
           'class': 'tooltip-dot y0'
         }).style({
           'display': (d) => d.series.hasTwoKeys() ? null : 'none'
+        }).on('click', (d:INeighbour, i) => {
+           this.eventMgr.trigger('click', d.row, i, d.series, this.options);
         });
       };
 
       var updateDots = (s) => {
         s.select('.tooltip-dot.y1').attr({
-          'd': (d) => circlePath(radius, xScale(d.row.x), yScale(d.row.y1)),
+          'd': (d) => circlePath(radius, xScale(d.row.x), yScale(d.series.axis)(d.row.y1)),
           'stroke': (d) => d.series.color
         });
 
         s.select('.tooltip-dot.y0').attr({
           'd': (d) => {
             if (d.series.hasTwoKeys()) {
-              return circlePath(radius, xScale(d.row.x), yScale(d.row.y0));
+              return circlePath(radius, xScale(d.row.x), yScale(d.series.axis)(d.row.y0));
             }
 
             return '';
@@ -317,17 +346,6 @@ module n3Charts.Factory {
       });
 
       return;
-    }
-
-    hide() {
-      this.svg
-        .style('display', 'none');
-
-      this.line
-        .style('opacity', '0');
-
-      this.dots
-        .style('opacity', '0');
     }
   }
 }

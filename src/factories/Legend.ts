@@ -29,7 +29,6 @@ module n3Charts.Factory {
     }
 
     update(data:Utils.Data, options:Options.Options) {
-      // Get the container dimensions
       var container = <Factory.Container> this.factoryMgr.get('container');
       var dim: Options.Dimensions = container.getDimensions();
 
@@ -38,15 +37,15 @@ module n3Charts.Factory {
           .call(this.legendClick());
 
         items.append('div').attr({'class': 'icon'});
-        items.append('div').attr({'class': 'label'});
+        items.append('div').attr({'class': 'legend-label'});
       };
 
       var update = (series) => {
         series
           .attr('class', (d:Options.SeriesOptions) => 'item ' + d.type.join(' '))
-          .classed('hidden', (d) => !d.visible);
+          .classed('legend-hidden', (d) => !d.visible);
         series.select('.icon').style('background-color', (d) => d.color);
-        series.select('.label').text((d) => d.label);
+        series.select('.legend-label').text((d) => d.label);
       };
 
       var legendItems = this.div.selectAll('.item')

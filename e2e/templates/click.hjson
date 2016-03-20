@@ -1,10 +1,17 @@
 {
 html: '''
-  <linechart ng-class="name" data="data" options="options"></linechart>
+  <linechart ng-class="name" data="data" options="options" on-click="onClick(row, index, series, options)"></linechart>
+  <div class="last-data">{{lastData}}</div>
 '''
 
 js: '''
   function($scope) {
+    $scope.onClick = function(row, index, series, options) {
+      console.log(row, index, series, options);
+      $scope.lastData = row;
+      $scope.$apply();
+    };
+
     $scope.data = {
       dataset0: [
         {x: 0, val_0: 0, val_1: 0, val_2: 0, val_3: 0},
@@ -19,25 +26,44 @@ js: '''
     };
 
     $scope.options = {
+      grid: {x: false, y: true},
+      margin: {right: 50, top: 30},
       series: [
         {
           axis: "y",
           dataset: "dataset0",
           key: "val_0",
-          label: "An area series",
-          color: "#1f77b4",
-          type: "area",
+          label: "Line",
+          color: "#d62728",
+          type: ["line"],
           id: 'mySeries0'
         },
         {
           axis: "y",
           dataset: "dataset0",
           key: "val_1",
-          label: "Another area series",
-          color: "grey",
-          thickness: "1px",
-          type: "area",
+          label: "Column",
+          color: "#d62728",
+          type: ["column"],
           id: 'mySeries1'
+        },
+        {
+          axis: "y",
+          dataset: "dataset0",
+          key: "val_2",
+          label: "Dot",
+          color: "#d62728",
+          type: ["dot"],
+          id: 'mySeries2'
+        },
+        {
+          axis: "y",
+          dataset: "dataset0",
+          key: "val_3",
+          label: "Area",
+          color: "#d62728",
+          type: ["area"],
+          id: 'mySeries3'
         }
       ],
       axes: {x: {key: "x"}}
@@ -45,3 +71,4 @@ js: '''
   }
 '''
 }
+

@@ -22,12 +22,33 @@ module n3Charts.Factory {
     }
 
     softUpdate() {
+      var container = <Factory.Container> this.factoryMgr.get('container');
+      var dim: Options.Dimensions = container.getDimensions();
+
       if (this.xAxis) {
-        this.svg.select('.x-grid').call(this.xAxis);
+        let sel:any = this.svg.select('.x-grid');
+
+        if (this.factoryMgr.get('transitions').isOn()) {
+          sel = sel
+            .transition()
+            .call(this.factoryMgr.getBoundFunction('transitions', 'edit'));
+        }
+
+        sel.attr('transform', 'translate(0, ' + dim.innerHeight + ')')
+           .call(this.xAxis.tickSize(-dim.innerHeight, 0));
       }
 
       if (this.yAxis) {
-        this.svg.select('.y-grid').call(this.yAxis);
+        let sel: any = this.svg.select('.y-grid');
+
+        if (this.factoryMgr.get('transitions').isOn()) {
+          sel = sel
+            .transition()
+            .call(this.factoryMgr.getBoundFunction('transitions', 'edit'));
+        }
+
+        sel
+          .call(this.yAxis.tickSize(-dim.innerWidth, 0));
       }
     }
 
@@ -36,13 +57,14 @@ module n3Charts.Factory {
       var dim: Options.Dimensions = container.getDimensions();
 
       if (options.grid.x) {
-        this.xAxis = <D3.Svg.Axis> this.factoryMgr.get('x-axis').cloneAxis();
+        this.xAxis = <D3.Svg.Axis> this.factoryMgr.get('x-axis').cloneAxis()
+          .tickSize(-dim.innerHeight, 0);
 
         this.svg.select('.x-grid')
           .transition()
           .call(this.factoryMgr.getBoundFunction('transitions', 'edit'))
           .attr('transform', 'translate(0, ' + dim.innerHeight + ')')
-          .call(this.xAxis.tickSize(-dim.innerHeight, 0));
+          .call(this.xAxis);
       }
 
       if (options.grid.y) {

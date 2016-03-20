@@ -33,7 +33,7 @@ module n3Charts.Factory {
         var y2 = this.factoryMgr.get('y2-axis').scale;
 
         y1.domain(y1.range().map((x) => x + deltaY).map(y1.invert));
-        y2.domain(y1.domain());
+        y2.domain(y2.range().map((x) => x + deltaY).map(y2.invert));
       }
     }
 
@@ -59,6 +59,27 @@ module n3Charts.Factory {
         this.isActive = this.hasMoved = false;
         turnBackOn = undefined;
         this.eventMgr.on(k('window-mouseup'), null);
+        this.eventMgr.on(k('window-mousemove'), null);
+      };
+
+      let onMouseMove = () => {
+        if (this.isActive) {
+          let [xEnd, yEnd] = d3.mouse(container.svg.node());
+          let deltaX = this.panOnX ? xStart - xEnd : 0;
+          let deltaY = this.panOnY ? yStart - yEnd : 0;
+
+          if (deltaX !== 0 || deltaY !== 0) {
+            if (!turnBackOn) {
+              turnBackOn = this.factoryMgr.turnFactoriesOff(['tooltip', 'transitions']);
+            }
+
+            this.hasMoved = true;
+            this.move(deltaX, deltaY);
+            this.eventMgr.trigger('pan');
+          }
+
+          [xStart, yStart] = [xEnd, yEnd];
+        }
       };
 
       container.svg
@@ -67,24 +88,7 @@ module n3Charts.Factory {
             this.isActive = true;
             [xStart, yStart] = d3.mouse(d3.event.currentTarget);
             this.eventMgr.on(k('window-mouseup'), onMouseUp);
-          }
-        }).on(k('mousemove'), () => {
-          if (this.isActive) {
-            let [xEnd, yEnd] = d3.mouse(d3.event.currentTarget);
-            let deltaX = this.panOnX ? xStart - xEnd : 0;
-            let deltaY = this.panOnY ? yStart - yEnd : 0;
-
-            if (deltaX !== 0 || deltaY !== 0) {
-              if (!turnBackOn) {
-                turnBackOn = this.factoryMgr.turnFactoriesOff(['tooltip', 'transitions']);
-              }
-
-              this.hasMoved = true;
-              this.move(deltaX, deltaY);
-              this.eventMgr.trigger('pan');
-            }
-
-            [xStart, yStart] = [xEnd, yEnd];
+            this.eventMgr.on(k('window-mousemove'), onMouseMove);
           }
         });
     }

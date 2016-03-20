@@ -40,11 +40,11 @@ Name | Type | Default | Description | Mandatory
 `key` | Object or String | - | This can either be a single string (`'value_0'` or something) or a pair of values, for areas, columns, etc (`{y0: 'min_value', y1: 'max_value'}`). | Yes
 `label` | String | `""` | What's shown in the tooltip and in the legend for this series. | No
 `id` | String | a uuid | A series' identifier, mostly used for visibility toggling. | No
-`axis` | String | `'y'` | The axis the series will use to plot its values. Currently, only `'y'` is supported. | Yes
+`axis` | String | `'y'` | The axis the series will use to plot its values. Can be either `'y'` or `'y2'`. | Yes
 `color` | String | `undefined` | The series's color. Any valid CSS value will work. | No
 `interpolation` | Object | `undefined` | Can be something like `{mode: 'cardinal', tension: 0.7}`. More about that [here](https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate) | No
 `type` | String or Array | `''` | The series's type(s). Can be any combination of `line`, `area`, `dot`, `column`. | No
-`visibility` | Boolean | `true` | The series's visibility. Updated on legend click. | No
+`visible` | Boolean | `true` | The series's visibility. Updated on legend click. | No
 `defined` | Function | `undefined` | Helps tell the chart where this series is defined or not, regarding its data. More on that [here](https://github.com/mbostock/d3/wiki/SVG-Shapes#line_defined) | No
 
 ### Axes
@@ -55,7 +55,7 @@ axes: {
   x: {
     key: 'foo',
     type: 'linear', // or 'date', or 'log'
-    ticks: [-10, 0, 10] // can also be a number
+    ticks: [-10, 0, 10] // can also be a number, or a function
   },
   y: {
     min: -10,
@@ -67,16 +67,30 @@ axes: {
     tickFormat: function(value, index) {
       return "Pouet : " + value + " " + index;
     }
-  }
+  },
+  y2: {} // same as y
 }
 ```
 Name | Type | Default | Description | Mandatory
 ---- | ---- | ------- | ------------ | --------
 `key`| String | `undefined` | The abscissas key, a property on each datum | Yes
 `type` | String | `'linear'` | The axis' type. can be either `'linear'`, `'log'` or `'date'`. | No
-`ticks` | Array or Number | `undefined` | The axis' ticks. Depending on what is given will either call `tickValues` or `ticks` on the inner d3 axis. | No
+`ticks` | Array or Number or Function | `undefined` | The axis' ticks. Depending on what is given will either call `tickValues` or `ticks` on the inner d3 axis, or use a home-made axis to display major and minor ticks (see below). | No
 `ticksShift` | Object | `{y: 0, x: 0}` | A bit of a hack to allow shifting of the ticks. May be useful if the chart is squeezed in a container and the 0 tick is cropped. Or not. | No. Of course not.
  `tickFormat` | Function | `undefined` | Formats the ticks. Takes the value and its index as arguments | No
+
+#### Major and minor ticks
+When given a function as the `ticks` attribute, the axis will stop generating its own ticks and start displayign exactly what's returned by the function. This is basically an advanced way of setting the ticks. However, the function must return data as follows :
+
+```js
+var myTicksFunction = function(domain) {
+  return {
+    major: [{label: '00', value: 0}, {label: '01', value: 1}],
+    minor: [{label: '.5', value: 0.5}, {label: '.5', value: 1.5}]
+  };
+};
+```
+
 
 ### Margin
 The `margin` property affects, well, the chart's margins. Useful to optimize space regarding your data. The `margin` object should look like this :
@@ -108,6 +122,8 @@ Name | Type | Description
 ---- | ---- | -------
 `abscissas` | String | The abscissas' label
 `rows` | `[{label, value, id, color}]` | These are the dots the chart will draw. All of the properties are strings, the `id` being checked by d3 to process its join.
+
+> The `tooltipHook` function will be called with `undefined` as sole argument when the tooltip is supposed to be hidden (i.e. when the mouse cursor exits the chart).
 
 ### Grid
 The `grid` object parametrizes how the chart's background grid will be shown. It's not mandatory and should look like this :
@@ -157,6 +173,7 @@ Name | Description | Example
 `on-domains-change` | Method called when an interaction changes the axes' domains. The horizontal and vertical axes' domains are passed under the key `$domains` | `on-domains-change="onDomainsChange($domains)"`
 `tooltip-sync-key` | The charts that share the same key and the same root scope will have synchronized tooltips | `tooltip-sync-key="mahKey"`
 `domains-sync-key` | The charts that share the same key and the same root scope will have synchronized axes' domains | `domains-sync-key="mahOtherKey"`
+`on-click` | Function to call when a data point is clicked | `on-click="mahClickCallback(row, index, series, options)"`
 
 > Please note that heterogeneous keys can't have the same value, i.e. don't pass the same string for two different keys.
 

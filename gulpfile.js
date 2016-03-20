@@ -4,7 +4,7 @@ var runSequence = require('run-sequence');
 var abs = require('path').resolve;
 
 var paths = {
-  source: {from: 'src/drivers/*.Angular.ts', to: '.tmp/build/'},
+  source: {from: ['src/drivers/*.ts', '!src/drivers/*.spec.ts'], to: '.tmp/build/'},
   style: {from: 'src/styles/**/*.scss', to: '.tmp/build/'},
   test: {from: 'src/**/*.spec.ts', to: '.tmp/test/'},
   spec: {config: abs('config/karma.conf.js'), from: 'src/**/*.spec.ts'},

@@ -14,6 +14,11 @@ module n3Charts.Factory.Series {
 
     create() {
       this.createContainer(this.factoryMgr.get('container').data);
+
+      // Hard update
+      this.eventMgr.on('data-update.' + this.type, this.update.bind(this));
+
+      // Soft updates
       this.eventMgr.on('pan.' + this.type, this.softUpdate.bind(this));
       this.eventMgr.on('zoom-end.' + this.type, this.softUpdate.bind(this));
       this.eventMgr.on('outer-world-domain-change.' + this.key, this.softUpdate.bind(this));
@@ -24,6 +29,13 @@ module n3Charts.Factory.Series {
       this.data = data;
       this.options = options;
       this.softUpdate();
+    }
+
+    getAxes(series: Options.SeriesOptions): {xAxis: Factory.Axis, yAxis: Factory.Axis} {
+      return {
+        xAxis: this.factoryMgr.get('x-axis'),
+        yAxis: this.factoryMgr.get(series.axis + '-axis')
+      };
     }
 
     softUpdate() {

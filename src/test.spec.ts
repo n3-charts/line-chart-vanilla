@@ -1,4 +1,4 @@
-/// <reference path='./drivers/LineChart.Angular.ts' />
+/// <reference path='./drivers/LineChart.Vanilla.ts' />
 
 /// <reference path='../typings/angularjs/angular-mocks.d.ts' />
 /// <reference path='../typings/mocha/mocha.d.ts' />
